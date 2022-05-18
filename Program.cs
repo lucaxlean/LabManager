@@ -17,12 +17,12 @@ if(modelName == "Computer")
     if(modelAction == "List")
     {
         Console.WriteLine("Computer List");
-        var computers = ComputerRepository,GetAll();
-        foreach (var computer in computers)
+        //var computers = ComputerRepository.GetAll();
+        foreach (var computer in ComputerRepository.GetAll();)
         {
-             Console.WriteLine($ "{0}, {1}, {2}, computer, Id, computer.Ram, computer.Processor");
+            Console.WriteLine($ "{0}, {1}, {2}, computer.Id, computer.Ram, computer.Processor");
         }
-        var message = $"{computer.id}, {computer.Ram}, {computer.Processor}";
+        //var message = $"{computer.id}, {computer.ram}, {computer.processor}";
     
        
     }
