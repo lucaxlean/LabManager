@@ -46,7 +46,7 @@ class ComputerRepository
         return computers;
     }
 
-    public void Save(Computer computer){
+    public Computer Save(Computer computer){
         var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
         var command = connection.CreateCommand();
@@ -58,6 +58,7 @@ class ComputerRepository
         command.Parameters.AddWithValue("$processor", computer.Processor);
 
         command.ExecuteNonQuery();
-        connection.Close();
+        connection.Close(); 
+        return computer; 
     }
 }
