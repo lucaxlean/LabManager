@@ -1,30 +1,57 @@
 using Microsoft.Data.Sqlite;
 
-namespace LabManager.Database; 
+namespace LabManager.Database;
 
+class DatabaseSetup{
 
-class DatabaseSetup
-{
-    public DatabaseSetup()
+    private readonly DatabaseConfig _databaseConfig;
+
+    public DatabaseSetup(DatabaseConfig databaseConfig)
     {
+        _databaseConfig = databaseConfig;
         CreateComputerTable();
-    } 
+        CreateLabTable();
+    }
 
-        public void CreateComputerTable()
+
+    private void CreateComputerTable()
     {
-        var connection = new SqliteConnection("Data Source=database.db"); 
-        connection.Open();
+        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
 
+        connection.Open();
         var command = connection.CreateCommand();
+
         command.CommandText = @"
             CREATE TABLE IF NOT EXISTS Computers(
-                id int not null primary key,
+                ID int not null primary key,
                 ram varchar(100) not null,
                 processor varchar(100) not null
             );
         ";
 
         command.ExecuteNonQuery();
+
+        connection.Close();
+    }
+
+    private void CreateLabTable()
+    {
+        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
+
+        connection.Open();
+        var command = connection.CreateCommand();
+
+        command.CommandText = @"
+            CREATE TABLE IF NOT EXISTS Labs(
+                ID INT NOT NULL PRIMARY KEY,
+                Number VARCHAR(100) NOT NULL,
+                Name VARCHAR(100) NOT NULL,
+                Block VARCHAR(50) NOT NULL
+            );
+        ";
+
+        command.ExecuteNonQuery();
+
         connection.Close();
     }
 }
