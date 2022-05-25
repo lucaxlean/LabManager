@@ -1,10 +1,17 @@
 using LabManager.Models;
 using Microsoft.Data.Sqlite;
+using LabManager.Database;
 
 namespace LabManager.Repositories; 
 
 class ComputerRepository
-{
+{ 
+    private readonly DatabaseConfig databaseConfig;
+
+    public ComputerRepository(DatabaseConfig databaseConfig)
+    {
+        this.databaseConfig = databaseConfig; 
+    }
     public List<Computer> GetAll()
     {
         var computers = new List<Computer>(); 
