@@ -36,6 +36,25 @@ if (modelName == "Computer")
         var computer = new Computer(id, ram, processor);
 
         computerRepository.Save(computer);
+    } 
+
+    if(modelAction == "Show")
+    {
+        var id = Convert.ToInt32(args[2]);
+        var computer = computerRepository.GetById(id);
+        Console.WriteLine($"{computer.Id}, {computer.Ram}, {computer.Processor}");
+    }
+    if(modelAction == "Update")
+    {
+        var id  = Convert.ToInt32(args[2]); 
+        string ram = args[3];
+        string processor = args[4]; 
+    } 
+
+    if(modelAction == "Delete")
+    {
+        var id = Covert.ToInt32(args[2]); 
+        computerRepository.Update[4]; 
     }
 }
 else if (modelName == "Lab")
