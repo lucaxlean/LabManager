@@ -1,6 +1,7 @@
 using LabManager.Models;
 using Microsoft.Data.Sqlite;
 using LabManager.Database;
+using Dapper;
 
 namespace LabManager.Repositories;
 
@@ -14,51 +15,68 @@ class ComputerRepository
         _databaseConfig = databaseConfig;
     }
 
-    public List<Computer> GetAll()
+    public IEnumerable<Computer> GetAll()
     {
-        var computers = new List<Computer>();
-
-        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
+        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
-        var command = connection.CreateCommand();
 
-        command.CommandText = $"SELECT * FROM Computers;";
-
-        var reader = command.ExecuteReader();
-
-        while (reader.Read())
-        {
-            var computer = new Computer(reader.GetInt32(0),reader.GetString(1), reader.GetString(2));
-            
-            computers.Add(computer);
-
-            /*computer.Add(
-                new Computer(
-                    reader.GetInt32(0),
-                    reader.GetString(1), 
-                    reader.GetString(2)
-                )
-            );*/
-        }
-
-        connection.Close();
-
+        var computers = connection.Query<Computer>("SELECT * FROM Computers");
+        
         return computers;
     }
 
-    public Computer Save(Computer computer){
-        var connection = new SqliteConnection(_databaseConfig.ConnectionString);
+    public Computer Save(Computer computer)
+    {
+        using var connection = new SqliteConnection(_databaseConfig.ConnectionString);
         connection.Open();
-        var command = connection.CreateCommand();
 
-        command.CommandText = $"INSERT INTO Computers VALUES($id, $ram, $processor)";
+        connection.Execute("INSERT INTO Computers VALUES(@Id, @Ram, @Processor)", computer);
 
-        command.Parameters.AddWithValue("$id", computer.Id);
-        command.Parameters.AddWithValue("$ram", computer.Ram);
-        command.Parameters.AddWithValue("$processor", computer.Processor);
-
-        command.ExecuteNonQuery();
-        connection.Close(); 
         return computer; 
+    } 
+
+    public bool ExistsById(int id)
+    {
+        using var connection = new SqliteConnection(_databaseConfig.ConnectionString); 
+        connection.Open(); 
+
+        var result = connection.ExecuteScalar<bool>("SELECT count(id) FROM Computers WHERE id = @Id;" , new {Id = id}); 
+
+        return result; 
+    } 
+
+    public Computer GetById(int id)
+    {
+        using var connection = new SqliteConnection(_databaseConfig.ConnectionString); 
+        connection.Open();
+
+        var computer = connection.QuerySingle<Computer>("SELECT * FROM Computers WHERE id = @Id" , new { Id = id}); 
+
+        return computer; 
+    } 
+
+    public Computer Update(Computer computer)
+    {
+        using var connection = new SqliteConnection(_databaseConfig.ConnectionString); 
+        connection.Open(); 
+
+        connection.Execute(@"
+            UPDATE Computers
+            SET 
+                ram = @Ram, 
+                processor = @Processor
+            WHERE id = @Id;
+        ", computer); 
+
+        return computer; 
+
+    } 
+
+    public void Delete(int id)
+    {
+        using var connection = new SqliteConnection(_databaseConfig.ConnectionString); 
+        connection.Open(); 
+
+        connection.Execute("DELETE FROM Computers WHERE id = @Id" , new { Id = id}); 
     }
 }

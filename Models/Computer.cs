@@ -1,14 +1,14 @@
 namespace LabManager.Models; 
 
-class Computer 
+class Computer
 {
-    public int Id { get; set; } 
+    public int Id { get; set; }
     public string Ram { get; set; }
-    public string Processor { get; set; } 
-
+    public string Processor { get; set; }
+    public Computer() { }
     public Computer(int id, string ram, string processor)
     {
-        Id =  id; 
+        Id = id;
         Ram = ram;
         Processor = processor;
     }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using LabManager.Database;
 using LabManager.Repositories;
-using LabManager.Models;
+using LabManager.Models; 
 
 var databaseConfig = new DatabaseConfig();
 var databaseSetup = new DatabaseSetup(databaseConfig);
